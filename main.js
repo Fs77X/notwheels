@@ -9,9 +9,11 @@ const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.inner
 
 
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
+const container = document.getElementById( 'canvas' );
+document.body.appendChild( container );
+renderer.setSize( 1200, 600 );
+container.appendChild( renderer.domElement );
 const controls = new OrbitControls(camera, renderer.domElement)
-document.body.appendChild( renderer.domElement );
 const light = new THREE.AmbientLight( 0xffffff, 1000);
 // light.position.set( 0,0,0 );
 scene.add( light );
@@ -28,7 +30,7 @@ camera.rotation.x = (-90* Math.PI/ 180)
 
 
 const loader = new STLLoader()
-loader.load('./src/viewer/ben_franklin.stl', (obama) => {
+loader.load('./src/viewer/obamium.stl', (obama) => {
     const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
     material.metallness = 1
     const mesh = new THREE.Mesh(obama, material);
