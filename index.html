@@ -1,29 +1,35 @@
 <!DOCTYPE html>
 <html>
+
 <head></head>
+
 <body>
-    <script type="module" type = "text/javascript" src="/main.js"></script>
+    <script type="module" type="text/javascript" src="/main.js"></script>
+    <!-- <script type="module" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r79/three.min.js"></script> -->
     <body onload="init()">
         <div id="canvas">
-            
+
         </div>
         <div style="position: absolute;
                     right: 0px;
                     width: 33%;
                     border: 3px solid #73AD21;
                     padding: 10px;">
-            <input id="fileInput" type="file" name="file" accept='.stl'/>
+            <input id="fileInput" type="file" name="file" accept='.stl' />
             <pre id="fileContent"></pre>
             <div class="slidecontainer">
-                <p>Move Left Axle X</p><input class="leftxslider" type="range" min="1" max="100" value="50" class="slider" id="myRange1">
+                <p>Move Left Axle X</p><input class="leftxslider" type="range" min="1" max="100" value="50"
+                    class="slider" id="myRange1">
             </div>
             <div class="slidecontainer">
-                <p>Move Right Axle X</p><input class="rightxslider" type="range" min="1" max="100" value="50" class="slider" id="myRange2">
+                <p>Move Right Axle X</p><input class="rightxslider" type="range" min="1" max="100" value="50"
+                    class="slider" id="myRange2">
             </div>
             <div class="slidecontainer">
-                <p>Move Axles Y</p><input class="yslider" type="range" min="1" max="100" value="50" class="slider" id="myRange3">
+                <p>Move Axles Y</p><input class="yslider" type="range" min="1" max="100" value="50" class="slider"
+                    id="myRange3">
             </div>
-            <input id="clickMe" type="button" value="Export" onclick="stlexport();" />
+            <input id="clickMe" type="button" value="Export" onclick="stlexport" />
         </div>
     </body>
 
@@ -51,21 +57,19 @@
         var slidery = document.getElementById("myRange3");
 
         //DO THREEJS STUFF HERE RE MOVING AXLES
-        sliderleftx.oninput = function() {
+        sliderleftx.oninput = function () {
             console.log(this.value)
         }
-        sliderrightx.oninput = function() {
+        sliderrightx.oninput = function () {
             console.log(this.value)
         }
-        slidery.oninput = function() {
+        slidery.oninput = function () {
             console.log(this.value)
         }
 
-        function stlexport(){
-            console.log('worky')
-        }
 
     </script>
 
 </body>
+
 </html>

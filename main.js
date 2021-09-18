@@ -1,5 +1,6 @@
 import * as THREE from 'https://cdn.skypack.dev/three@0.132.2';
 import { STLLoader } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/loaders/STLLoader.js';
+import { GLTFExporter } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/exporters/GLTFExporter.js';
 import { OrbitControls } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/controls/OrbitControls.js';
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -19,8 +20,25 @@ scene.add(light);
 camera.position.set(10, 50, 200);
 camera.rotation.x = (-90 * Math.PI / 180)
 let path = ''
-let selected = false;
 const loader = new STLLoader()
+loader.load('./axels.stl', (bush) => {
+    const material = new THREE.MeshBasicMaterial( { color: 0xFF6700 } );
+    material.metallness = 1
+    const mesh = new THREE.Mesh(bush, material);
+    mesh.name = "wheel1"
+    scene.add(mesh);
+    mesh.position.x = mesh.position.x - 50;
+    mesh.rotation.y += 90 * Math.PI/180; 
+})
+
+loader.load('./axels.stl', (clinton) => {
+    const material = new THREE.MeshBasicMaterial( { color: 0xFF6756 } );
+    material.metallness = 1
+    const mesh = new THREE.Mesh(clinton, material);
+    mesh.name = "wheel2"
+    scene.add(mesh);
+    mesh.rotation.y += 90 * Math.PI/180; 
+})
 
 
 controls.update()
@@ -36,7 +54,6 @@ var GameLoop = function () {
 
     render();
 };
-
 GameLoop();
 const saveData = async (file) => {
     var formdata = new FormData();
@@ -64,7 +81,6 @@ const epicChange = async () => {
     const curFiles = input.files;
     await saveData(curFiles[0])
     path = './models/' + curFiles[0].name
-    selected = true
     loader.load(path, (obama) => {
         const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
         material.metallness = 1
@@ -75,4 +91,19 @@ const epicChange = async () => {
     })
 
 }
+
 input.addEventListener('change', epicChange)
+var exp = document.getElementById("clickMe")
+exp.onclick = function () {
+    console.log('fucks')
+    const exporter = new GLTFExporter();
+    exporter.parse(scene, function (stl) {
+        const link = document.createElement( 'a' );
+        link.style.display = 'none';
+        document.body.appendChild( link );
+        console.log(stl);
+        link.href = URL.createObjectURL(new Blob( [ JSON.stringify(stl) ], { type: 'text/plain' } ), 'output.gltf');
+        link.download = 'output.gltf';
+        link.click();
+    });
+}
