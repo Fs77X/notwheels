@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
     }
  });
 const upload = multer({ storage: storage }).single("data");
-app.post("/save/:filename", async (req, res) => {
+app.post("/save", async (req, res) => {
     upload(req, res, (err) => {
         if(err) {
           res.status(400).send("Something went wrong!");

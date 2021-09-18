@@ -18,17 +18,11 @@ scene.add(light);
 
 camera.position.set(10, 50, 200);
 camera.rotation.x = (-90 * Math.PI / 180)
-
-
+let path = ''
+let selected = false;
 const loader = new STLLoader()
-loader.load('./src/viewer/obamium.stl', (obama) => {
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    material.metallness = 1
-    const mesh = new THREE.Mesh(obama, material);
-    scene.add(mesh);
-    mesh.rotation.x = 270 * Math.PI / 180
 
-})
+
 controls.update()
 // Draw scene
 var render = function () {
@@ -44,30 +38,17 @@ var GameLoop = function () {
 };
 
 GameLoop();
-const readFile = (file) => {
-    const reader = new FileReader()
-    return new Promise((resolve, reject) => {
-        reader.onload = event => resolve(event.target.result)
-        reader.onerror = event => reject(event)
-        reader.readAsText(file)
-    })
-}
-const saveData = async(filename, content) => {
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    var raw = JSON.stringify({
-        "data": content
-    });
+const saveData = async (file) => {
+    var formdata = new FormData();
+    formdata.append("data", file);
 
     var requestOptions = {
         method: 'POST',
-        headers: myHeaders,
-        body: raw,
+        body: formdata,
         redirect: 'follow'
     };
 
-    await fetch("http://localhost:3000/save/" + filename, requestOptions)
+    fetch("http://localhost:3000/save/", requestOptions)
         .then(response => response.text())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
@@ -75,9 +56,23 @@ const saveData = async(filename, content) => {
 }
 const input = document.querySelector('input');
 const epicChange = async () => {
+    console.log(scene.children)
+    const oldObama = scene.getObjectByName("obama")
+    if (oldObama) {
+        scene.remove(oldObama)
+    }
     const curFiles = input.files;
-    readFile(curFiles[0]).then((content) => saveData(curFiles[0].name, content)).catch((err) => { console.log(err) })
-
+    await saveData(curFiles[0])
+    path = './models/' + curFiles[0].name
+    selected = true
+    loader.load(path, (obama) => {
+        const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        material.metallness = 1
+        const mesh = new THREE.Mesh(obama, material);
+        mesh.name = "obama"
+        scene.add(mesh);
+        mesh.rotation.x = 270 * Math.PI / 180
+    })
 
 }
 input.addEventListener('change', epicChange)
