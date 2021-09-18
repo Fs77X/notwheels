@@ -2,21 +2,31 @@ const express = require('express')
 const fs = require("fs")
 const bodyParser = require("body-parser")
 const app = express()
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
+app.use(bodyParser.json({limit: '50mb'}));
+var cors = require('cors');
+app.use(cors());
+const multer  = require('multer')
+// const upload = multer({ dest: '../models' }).single('data')
+
+// app.options('*', cors());
 app.get('/', (req, res) => res.send('Hello World!'))
 
 app.listen(3000, () => console.log('Example app listening on port 3000!'))
-
+const storage = multer.diskStorage({   
+    destination: function(req, file, cb) { 
+       cb(null, './models');    
+    }, 
+    filename: function (req, file, cb) { 
+       cb(null , file.originalname);   
+    }
+ });
+const upload = multer({ storage: storage }).single("data");
 app.post("/save/:filename", async (req, res) => {
-    const filename = req.params.filename
-    const data = req.body.data
-    fs.writeFile('/home/farquad/Documents/notwheels/models/' + filename, data, err => {
+    upload(req, res, (err) => {
         if(err) {
-            console.log(err)
-            res.status(500).send()
-            return
+          res.status(400).send("Something went wrong!");
         }
-    })
-    res.status(200).send()
+        res.status(200).send("good job");
+      });
 })

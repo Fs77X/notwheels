@@ -1,34 +1,33 @@
 import * as THREE from 'https://cdn.skypack.dev/three@0.132.2';
 import { STLLoader } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/loaders/STLLoader.js';
 import { OrbitControls } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/controls/OrbitControls.js';
-const fs = require('fs')
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 
 const renderer = new THREE.WebGLRenderer();
-const container = document.getElementById( 'canvas' );
-document.body.appendChild( container );
-renderer.setSize( 1200, 600 );
-container.appendChild( renderer.domElement );
+const container = document.getElementById('canvas');
+document.body.appendChild(container);
+renderer.setSize(1200, 600);
+container.appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement)
-const light = new THREE.AmbientLight( 0xffffff, 1000);
+const light = new THREE.AmbientLight(0xffffff, 1000);
 // light.position.set( 0,0,0 );
-scene.add( light );
+scene.add(light);
 
 
 camera.position.set(10, 50, 200);
-camera.rotation.x = (-90* Math.PI/ 180)
+camera.rotation.x = (-90 * Math.PI / 180)
 
 
 const loader = new STLLoader()
 loader.load('./src/viewer/obamium.stl', (obama) => {
-    const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     material.metallness = 1
     const mesh = new THREE.Mesh(obama, material);
     scene.add(mesh);
-    mesh.rotation.x = 270 * Math.PI/180
-    
+    mesh.rotation.x = 270 * Math.PI / 180
+
 })
 controls.update()
 // Draw scene
@@ -53,11 +52,31 @@ const readFile = (file) => {
         reader.readAsText(file)
     })
 }
+const saveData = async(filename, content) => {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+        "data": content
+    });
+
+    var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+    };
+
+    await fetch("http://localhost:3000/save/" + filename, requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
+
+}
 const input = document.querySelector('input');
 const epicChange = async () => {
     const curFiles = input.files;
-    console.log(curFiles[0])
-    readFile(curFiles[0]).then((content) => console.log(content)).catch((err) => {console.log(err)})
+    readFile(curFiles[0]).then((content) => saveData(curFiles[0].name, content)).catch((err) => { console.log(err) })
 
 
 }
