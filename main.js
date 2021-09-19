@@ -2,6 +2,7 @@ import * as THREE from 'https://cdn.skypack.dev/three@0.132.2';
 import { STLLoader } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/loaders/STLLoader.js';
 import { GLTFExporter } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/exporters/GLTFExporter.js';
 import { OrbitControls } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/controls/OrbitControls.js';
+// import * as ThreeCSG from 'Three.CSG.js'
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
@@ -21,25 +22,45 @@ camera.position.set(10, 50, 200);
 camera.rotation.x = (-90 * Math.PI / 180)
 let path = ''
 const loader = new STLLoader()
-loader.load('./axels.stl', (bush) => {
-    const material = new THREE.MeshBasicMaterial( { color: 0xFF6700 } );
-    material.metallness = 1
-    const mesh = new THREE.Mesh(bush, material);
-    mesh.name = "wheel1"
-    scene.add(mesh);
-    mesh.position.x = mesh.position.x - 50;
-    mesh.rotation.y += 90 * Math.PI/180; 
-})
 
-loader.load('./axels.stl', (clinton) => {
+
+loader.load('./NotWheels_boxcar_3.stl', (clinton) => {
     const material = new THREE.MeshBasicMaterial( { color: 0xFF6756 } );
     material.metallness = 1
     const mesh = new THREE.Mesh(clinton, material);
     mesh.name = "wheel2"
     scene.add(mesh);
-    mesh.rotation.y += 90 * Math.PI/180; 
+    mesh.rotation.x += 270 * Math.PI/180; 
+    mesh.rotation.z += -90 * Math.PI/180; 
+    // mesh.rotation.y += 90 * Math.PI/180; 
 })
 
+loader.load('./models/Glorious-Lappi.stl', (obama) => {
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    material.metallness = 1
+    const mesh = new THREE.Mesh(obama, material);
+    mesh.name = "obama"
+    scene.add(mesh);
+    mesh.rotation.x = 270 * Math.PI / 180
+    obama.computeBoundingBox();
+    var bb = obama.boundingBox;
+    var object3DWidth = bb.max.x - bb.min.x;
+    var object3DHeight = bb.max.y - bb.min.y;
+    var object3DDepth = bb.max.z - bb.min.z;
+    console.log(object3DWidth, object3DDepth, object3DHeight)
+    object3DDepth /= 13
+    const newDepth = 1/object3DDepth
+    object3DWidth /= 60
+    const newWidth = 1/object3DWidth
+    const zscale = (1/newWidth + 1/newDepth) * 0.01
+    console.log(newDepth, newWidth)
+    mesh.scale.y = newDepth
+    mesh.scale.x = newWidth
+    mesh.scale.z = newDepth
+    mesh.position.y = 13
+    mesh.position.z = 50
+    mesh.position.x = -10
+})
 
 controls.update()
 // Draw scene
