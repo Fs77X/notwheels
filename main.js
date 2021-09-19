@@ -48,7 +48,7 @@ loader.load('./models/Glorious-Lappi.stl', (obama) => {
     var object3DHeight = bb.max.y - bb.min.y;
     var object3DDepth = bb.max.z - bb.min.z;
     console.log(object3DWidth, object3DDepth, object3DHeight)
-    object3DDepth /= 13
+    object3DDepth /= 8
     const newDepth = 1/object3DDepth
     object3DWidth /= 60
     const newWidth = 1/object3DWidth
@@ -57,7 +57,7 @@ loader.load('./models/Glorious-Lappi.stl', (obama) => {
     mesh.scale.y = newDepth
     mesh.scale.x = newWidth
     mesh.scale.z = newDepth
-    mesh.position.y = 13
+    mesh.position.y = 14
     mesh.position.z = 50
     mesh.position.x = -10
 })
